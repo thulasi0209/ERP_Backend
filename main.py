@@ -7,8 +7,21 @@ from database import engine, Base, SessionLocal
 from models import Vendor, PurchaseOrder, Inventory
 from schemas import CreateVendor, ShowVendor, CreateOrder, ShowOrder, ShowInventory
 
+# ADDED: Auto-migrate database on startup
+def run_migrations():
+    """Auto-run database migrations on startup"""
+    try:
+        import migrate_add_is_read
+        print("[Startup] Running database migrations...")
+        migrate_add_is_read.migrate()
+    except Exception as e:
+        print(f"[Startup] Migration error (non-critical): {e}")
+
 # Create all database tables
 Base.metadata.create_all(bind=engine, checkfirst=True)
+
+# ADDED: Run migrations on startup
+run_migrations()
 
 # Initialize FastAPI app
 app = FastAPI(
