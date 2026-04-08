@@ -166,5 +166,25 @@ def get_inventory(db: Session = Depends(get_db)):
     return inventory_items
 
 
+@app.put("/inventory/{item_id}/mark-read", response_model=ShowInventory)
+def mark_inventory_read(item_id: int, db: Session = Depends(get_db)):
+    """
+    Mark an inventory item as read
+    
+    - **item_id**: ID of the inventory item
+    """
+    item = db.query(Inventory).filter(Inventory.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Inventory item not found")
+    
+    # ADDED: Toggle read status
+    item.is_read = 1 if item.is_read == 0 else 0
+    
+    db.commit()
+    db.refresh(item)
+    
+    return item
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=False)
