@@ -57,6 +57,23 @@ def read_root():
     }
 
 
+# ADDED: Health check endpoint
+@app.get("/health")
+def health_check():
+    """Health check endpoint for debugging"""
+    return {
+        "status": "healthy",
+        "version": "1.0.0",
+        "endpoints": {
+            "inventory_get": "/inventory (GET)",
+            "inventory_mark_read": "/inventory/{item_id}/mark-read (PUT)",
+            "orders_get": "/orders (GET)",
+            "orders_create": "/orders (POST)",
+            "orders_receive": "/orders/{order_id}/receive (POST)"
+        }
+    }
+
+
 # ==================== VENDOR ENDPOINTS ====================
 
 @app.post("/vendors", response_model=ShowVendor)
